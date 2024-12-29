@@ -8,5 +8,6 @@ for i in range(a):
    while my_array[i] > 10:
         my_array[i] = int(input(f"{i} индексийн 0-9 хооронд утга оруулна уу:"))
 
+
 print(my_array)
 
