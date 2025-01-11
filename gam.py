@@ -1,6 +1,6 @@
 import pygame
 import random
-import sys
+import sys 
 
 pygame.init()
 
@@ -17,21 +17,21 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Car Crash Game")
 clock = pygame.time.Clock()
 
-background_image = pygame.image.load(r"E:/python/game/background.jpg")
+background_image = pygame.image.load("game/background.jpg")
 background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 car_images = [
-    pygame.image.load(r"E:/python/game/car1.png"),
-    pygame.transform.flip(pygame.image.load(r"E:/python/game/car5.png"), False, False),
-    pygame.transform.flip(pygame.image.load(r"E:/python/game/car4.png"), False, False)
+    pygame.image.load("game/car1.png"),
+    pygame.transform.flip(pygame.image.load("game/car5.png"), False, False),
+    pygame.transform.flip(pygame.image.load("game/car4.png"), False, False)
 ]
 car_images = [pygame.transform.scale(img, (50, 100)) for img in car_images]
 current_car_index = 0
 
-obstacle_image = pygame.image.load(r"E:/python/game/obstacle.png")
+obstacle_image = pygame.image.load("game/obstacle.png")
 obstacle_image = pygame.transform.scale(obstacle_image, (50, 100))
 
-coin_image = pygame.image.load(r"E:/python/game/coin.png")
+coin_image = pygame.image.load("game/coin.png")
 coin_image = pygame.transform.scale(coin_image, (30, 30))
 
 CAR_WIDTH = 50
@@ -60,6 +60,8 @@ highest_score = 0
 
 coins_collected = 0
 
+lives = 3
+
 def draw_car(x, y, car_index):
     screen.blit(car_images[car_index], (x, y))
 
@@ -84,6 +86,10 @@ def display_highest_score(highest_score):
 def display_coins_collected(coins_collected):
     coins_text = font.render(f"Coins: {coins_collected}", True, GREEN)
     screen.blit(coins_text, (10, 90))
+
+def display_lives(lives):
+    lives_text = font.render(f"Lives: {lives}", True, RED)
+    screen.blit(lives_text, (SCREEN_WIDTH - 150, 50))
 
 def car_selection_menu():
     global current_car_index
@@ -164,12 +170,15 @@ while running:
     car_rect = pygame.Rect(car_x, car_y, CAR_WIDTH, CAR_HEIGHT)
     for obstacle in obstacles:
         if car_rect.colliderect(obstacle):
-            if score > highest_score:
-                highest_score = score
-            print("Game Over!")
-            print(f"Final Score: {score}")
-            print(f"Highest Score: {highest_score}")
-            running = False
+            lives -= 1
+            obstacles.remove(obstacle)
+            if lives <= 0:
+                if score > highest_score:
+                    highest_score = score
+                print("Game Over!")
+                print(f"Final Score: {score}")
+                print(f"Highest Score: {highest_score}")
+                running = False
 
     for coin in coins:
         if car_rect.colliderect(coin):
@@ -188,6 +197,7 @@ while running:
     display_nitro(nitro_active)
     display_highest_score(highest_score)
     display_coins_collected(coins_collected)
+    display_lives(lives)
 
     pygame.display.flip()
     clock.tick(30)
